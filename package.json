@@ -7,8 +7,8 @@
   "repository": "git@github.com:rubensworks/asynciterator-union.js.git",
   "keywords": [
     "asynciterator",
-    "proxy",
-    "promise"
+    "union",
+    "roundrobin"
   ],
   "author": "Ruben Taelman <ruben.taelman@ugent.be>",
   "license": "MIT",
