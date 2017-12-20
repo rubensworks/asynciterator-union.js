@@ -35,7 +35,7 @@ export class RoundRobinUnionIterator<T> extends BufferedIterator<T> {
 
       // Remove the source if it has ended, otherwise, increment our stored position
       if (source.ended) {
-        this.sources.splice(this.currentSource);
+        this.sources.splice(this.currentSource, 1);
       } else {
         this.currentSource++;
       }
