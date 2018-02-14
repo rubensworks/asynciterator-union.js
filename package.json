@@ -13,9 +13,9 @@
   "author": "Ruben Taelman <ruben.taelman@ugent.be>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rubensworks/asynciterator-union/issues"
+    "url": "https://github.com/rubensworks/asynciterator-union.js/issues"
   },
-  "homepage": "https://github.com/rubensworks/asynciterator-union#readme",
+  "homepage": "https://github.com/rubensworks/asynciterator-union.js#readme",
   "files": [
     "lib/**/*.d.ts",
     "lib/**/*.js",
