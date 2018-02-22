@@ -6,7 +6,7 @@ describe('RoundRobinUnionIterator', () => {
   let sources: AsyncIterator<number>[];
   let it1: AsyncIterator<number>;
   let it2: AsyncIterator<number>;
-  let rrit: RoundRobinUnionIterator;
+  let rrit: RoundRobinUnionIterator<number>;
 
   beforeEach(() => {
     sources = [
@@ -56,6 +56,11 @@ describe('RoundRobinUnionIterator', () => {
     return p.then((data) => {
       expect(data).toBeTruthy();
     });
+  });
+
+  it('should allow the _read method to be called multiple times', () => {
+    rrit._read(1, () => { return; });
+    rrit._read(1, () => { return; });
   });
 
   it('should make a round-robin union of the data elements', async () => {

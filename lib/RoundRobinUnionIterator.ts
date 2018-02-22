@@ -10,19 +10,26 @@ export class RoundRobinUnionIterator<T> extends BufferedIterator<T> {
 
   protected readonly sources: AsyncIterator<T>[];
   protected currentSource: number = 0;
+  protected attachedListeners: boolean = false;
 
   constructor(sources: AsyncIterator<T>[], options?: BufferedIteratorOptions) {
-    super(options);
+    super(options || { autoStart: false });
     this.sources = sources;
 
     for (const source of this.sources) {
-      source.on('readable', () => this._fillBuffer());
-      source.on('end', () => this._fillBuffer());
       source.on('error', (error) => this.emit('error', error));
     }
   }
 
   public _read(count: number, done: () => void): void {
+    if (!this.attachedListeners) {
+      this.attachedListeners = true;
+      for (const source of this.sources) {
+        source.on('readable', () => this._fillBuffer());
+        source.on('end', () => this._fillBuffer());
+      }
+    }
+
     let item: T = null;
     let attempts: number = this.sources.length;
 
