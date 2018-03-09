@@ -6,6 +6,8 @@
 
 An AsyncIterator for taking the union of different AsyncIterators.
 
+As of version 1.2.0, this requires Node version 8 or higher.
+
 ## Usage
 
 ```javascript
