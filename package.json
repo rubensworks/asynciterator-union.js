@@ -1,6 +1,6 @@
 {
   "name": "asynciterator-union",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "An AsyncIterator for taking the union of different AsyncIterators",
   "main": "index.js",
   "typings": "index",
@@ -23,7 +23,7 @@
     "index.js"
   ],
   "dependencies": {
-    "asynciterator": "^1.1.0"
+    "asynciterator": "^2.0.0"
   },
   "devDependencies": {
     "@types/asynciterator": "^1.1.1",
