@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/rubensworks/asynciterator-union.js.svg?branch=master)](https://travis-ci.org/rubensworks/asynciterator-union.js)
 [![Coverage Status](https://coveralls.io/repos/github/rubensworks/asynciterator-union.js/badge.svg?branch=master)](https://coveralls.io/github/rubensworks/asynciterator-union.js?branch=master)
-[![npm version](https://badge.fury.io/js/asynciterator-union.svg)](https://www.npmjs.com/package/asynciterator-union)
+[![npm version](https://badge.fury.io/js/asynciterator-union.svg)](https://www.npmjs.com/package/asynciterator-union) [![Greenkeeper badge](https://badges.greenkeeper.io/rubensworks/asynciterator-union.js.svg)](https://greenkeeper.io/)
 
 An AsyncIterator for taking the union of different AsyncIterators.
 
