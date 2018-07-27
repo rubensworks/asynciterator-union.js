@@ -1,4 +1,4 @@
-import {ArrayIterator, AsyncIterator, BufferedIterator} from "asynciterator";
+import {ArrayIterator, AsyncIterator, BufferedIterator, EmptyIterator} from "asynciterator";
 import {RoundRobinUnionIterator} from "../lib/RoundRobinUnionIterator";
 const arrayifyStream = require('arrayify-stream');
 
@@ -36,6 +36,11 @@ describe('RoundRobinUnionIterator', () => {
   it('should be constructable with 1 source in an iterator', () => {
     return expect(new RoundRobinUnionIterator(new ArrayIterator(
       [AsyncIterator.range(0, 2)]))).toBeInstanceOf(AsyncIterator);
+  });
+
+  it('should be constructable with 1 empty source in an iterator', () => {
+    return expect(new RoundRobinUnionIterator(new ArrayIterator(
+      [new EmptyIterator()]))).toBeInstanceOf(AsyncIterator);
   });
 
   it('should be constructable with 2 sources in an iterator', () => {
