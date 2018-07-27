@@ -1,32 +1,36 @@
-import {AsyncIterator, BufferedIterator, BufferedIteratorOptions} from "asynciterator";
+import {ArrayIterator, AsyncIterator, BufferedIterator, BufferedIteratorOptions} from "asynciterator";
 
 /**
- * An iterator that takes elements from a given set of iterators in a round-robin manner.
+ * An iterator that takes elements from a given array or iterator of iterators in a round-robin manner.
  *
  * Based on LDF client's UnionIterator:
  * https://github.com/LinkedDataFragments/Client.js/blob/master/lib/sparql/UnionIterator.js
  */
 export class RoundRobinUnionIterator<T> extends BufferedIterator<T> {
 
+  protected readonly sourceIterator: AsyncIterator<AsyncIterator<T>>;
   protected readonly sources: AsyncIterator<T>[];
+  protected sourcedEnded: boolean = false;
   protected currentSource: number = 0;
-  protected attachedListeners: boolean = false;
 
-  constructor(sources: AsyncIterator<T>[], options?: BufferedIteratorOptions) {
+  constructor(sources: AsyncIterator<AsyncIterator<T>> | AsyncIterator<T>[], options?: BufferedIteratorOptions) {
     super(options || { autoStart: false });
-    this.sources = sources;
+    this.sources = [];
+    this.sourceIterator = Array.isArray(sources) ? new ArrayIterator(sources) : sources;
 
-    for (const source of this.sources) {
-      source.on('error', (error) => this.emit('error', error));
-    }
+    this.sourceIterator.on('error', (error) => this.emit('error', error));
   }
 
   public _read(count: number, done: () => void): void {
-    if (!this.attachedListeners) {
-      this.attachedListeners = true;
-      for (const source of this.sources) {
-        source.on('readable', () => this._fillBuffer());
-        source.on('end', () => this._fillBuffer());
+    // Poll for new sources
+    if (!this.sourcedEnded) {
+      let source: AsyncIterator<T>;
+      while (source = this.sourceIterator.read()) {
+        source.on('error', (error) => this.emit('error', error));
+        this.sources.push(source);
+      }
+      if (this.sourceIterator.ended) {
+        this.sourcedEnded = true;
       }
     }
 
@@ -55,7 +59,7 @@ export class RoundRobinUnionIterator<T> extends BufferedIterator<T> {
       this._push(item);
     }
     // Otherwise close
-    if (!this.sources.length) {
+    if (!this.sources.length && this.sourcedEnded) {
       this.close();
     }
 
