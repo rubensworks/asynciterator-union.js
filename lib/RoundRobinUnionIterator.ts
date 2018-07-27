@@ -27,6 +27,8 @@ export class RoundRobinUnionIterator<T> extends BufferedIterator<T> {
       let source: AsyncIterator<T>;
       while (source = this.sourceIterator.read()) {
         source.on('error', (error) => this.emit('error', error));
+        source.on('readable', () => this._fillBuffer());
+        source.on('end', () => this._fillBuffer());
         this.sources.push(source);
       }
       if (this.sourceIterator.ended) {
