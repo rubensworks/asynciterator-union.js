@@ -12,6 +12,7 @@ export class RoundRobinUnionIterator<T> extends BufferedIterator<T> {
   protected readonly sources: AsyncIterator<T>[];
   protected sourcedEnded: boolean = false;
   protected currentSource: number = 0;
+  protected listenersAttached: boolean = false;
 
   constructor(sources: AsyncIterator<AsyncIterator<T>> | AsyncIterator<T>[], options?: BufferedIteratorOptions) {
     super(options || { autoStart: false });
@@ -22,8 +23,14 @@ export class RoundRobinUnionIterator<T> extends BufferedIterator<T> {
   }
 
   public _read(count: number, done: () => void): void {
-    // Poll for new sources
     if (!this.sourcedEnded) {
+      // Fill the buffer once the source iterator becomes readable
+      if (!this.listenersAttached) {
+        this.listenersAttached = true;
+        this.sourceIterator.on('readable', () => this._fillBuffer());
+      }
+
+      // Poll for new sources
       let source: AsyncIterator<T>;
       while (source = this.sourceIterator.read()) {
         source.on('error', (error) => this.emit('error', error));
@@ -31,6 +38,7 @@ export class RoundRobinUnionIterator<T> extends BufferedIterator<T> {
         source.on('end', () => this._fillBuffer());
         this.sources.push(source);
       }
+
       if (this.sourceIterator.ended) {
         this.sourcedEnded = true;
       }
