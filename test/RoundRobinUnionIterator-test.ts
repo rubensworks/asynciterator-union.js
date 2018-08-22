@@ -106,6 +106,17 @@ describe('RoundRobinUnionIterator', () => {
     return expect((await arrayifyStream(rrit)).sort()).toEqual([0, 1, 2, 3, 4, 5, 6]);
   });
 
+  it('should make a round-robin union of the data elements for 1 non-empty source and 4 empty sources', async () => {
+    rrit = new RoundRobinUnionIterator([
+      new EmptyIterator(),
+      new EmptyIterator(),
+      AsyncIterator.range(0, 2),
+      new EmptyIterator(),
+      new EmptyIterator(),
+    ]);
+    return expect((await arrayifyStream(rrit)).sort()).toEqual([0, 1, 2]);
+  });
+
   describe('with sources that are added dynamically', () => {
     const sourceStream = new BufferedIterator<AsyncIterator<number>>();
     const rritStream = new RoundRobinUnionIterator<number>(sourceStream);
