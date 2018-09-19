@@ -61,7 +61,7 @@ export class RoundRobinUnionIterator<T> extends BufferedIterator<T> {
         this.currentSource++;
       }
 
-      this.currentSource = this.currentSource % this.sources.length;
+      this.currentSource = this.sources.length ? this.currentSource % this.sources.length : 0;
     }
 
     // Push to the buffer if we have an item
