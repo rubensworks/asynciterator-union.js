@@ -2,6 +2,16 @@ import {ArrayIterator, AsyncIterator, BufferedIterator, EmptyIterator} from "asy
 import {RoundRobinUnionIterator} from "../lib/RoundRobinUnionIterator";
 const arrayifyStream = require('arrayify-stream');
 
+class DelayedStream extends AsyncIterator<AsyncIterator<void>> {
+  constructor() {
+    super();
+  }
+  public read() {
+    setTimeout(() => this.close(), 10);
+    return null;
+  }
+}
+
 describe('RoundRobinUnionIterator', () => {
   let sources: AsyncIterator<number>[];
   let it1: AsyncIterator<number>;
@@ -210,5 +220,10 @@ describe('RoundRobinUnionIterator', () => {
 
       expect(rritStream.ended).toBeTruthy();
     });
+  });
+
+  it('should end when the end event of the source stream is delayed', async () => {
+    const rr = new RoundRobinUnionIterator(new DelayedStream());
+    return expect(await arrayifyStream(rr)).toEqual([]);
   });
 });
