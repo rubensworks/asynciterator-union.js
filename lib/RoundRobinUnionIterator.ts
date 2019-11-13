@@ -20,6 +20,10 @@ export class RoundRobinUnionIterator<T> extends BufferedIterator<T> {
     this.sourceIterator = Array.isArray(sources) ? new ArrayIterator(sources) : sources;
 
     this.sourceIterator.on('error', (error) => this.emit('error', error));
+    this.sourceIterator.on('end', () => {
+      this.sourcedEnded = true;
+      this._checkClose();
+    });
   }
 
   public _read(count: number, done: () => void): void {
@@ -37,10 +41,6 @@ export class RoundRobinUnionIterator<T> extends BufferedIterator<T> {
         source.on('readable', () => this._fillBuffer());
         source.on('end', () => this._fillBuffer());
         this.sources.push(source);
-      }
-
-      if (this.sourceIterator.ended) {
-        this.sourcedEnded = true;
       }
     }
 
@@ -69,11 +69,15 @@ export class RoundRobinUnionIterator<T> extends BufferedIterator<T> {
       this._push(item);
     }
     // Otherwise close
+    this._checkClose();
+
+    done();
+  }
+
+  private _checkClose() {
     if (!this.sources.length && this.sourcedEnded) {
       this.close();
     }
-
-    done();
   }
 
 }
