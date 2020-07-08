@@ -23,7 +23,7 @@
     "index.js"
   ],
   "dependencies": {
-    "asynciterator": "^2.0.0"
+    "asynciterator": "^3.0.0"
   },
   "devDependencies": {
     "@types/asynciterator": "^1.1.1",
