@@ -1,3 +1,7 @@
+# DEPRECATED
+
+As of AsyncIterator 3.x.x, this functionality exists in `UnionIterator`.
+
 # Async Union Iterator
 
 [![Build Status](https://travis-ci.org/rubensworks/asynciterator-union.js.svg?branch=master)](https://travis-ci.org/rubensworks/asynciterator-union.js)
